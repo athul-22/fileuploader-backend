@@ -5,8 +5,12 @@ const mongoose = require('mongoose');
 const cloudinary = require('cloudinary').v2;
 
 const app = express();
-
 app.use(cors());
+app.use(cors({
+    origin: 'http://localhost:3000', 
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+  }));
 app.use(express.json());
 
 // Connect to MongoDB
@@ -21,7 +25,7 @@ db.once('open', () => {
   console.log('Connected to MongoDB successfully!');
 });
 
-// Cloudinary
+// Configure Cloudinary with your credentials
 cloudinary.config({
   cloud_name: 'tesalab',
   api_key: '129872178934864',
@@ -43,14 +47,14 @@ const File = mongoose.model('File', {
   originalname: String,
   filename: String,
   mimetype: String,
-  fileLink: String, 
+  fileLink: String, // Keep the field for now
 });
 
 app.post('/upload', upload.single('file'), async (req, res) => {
   try {
     // Upload the file to Cloudinary
     const cloudinaryUpload = await cloudinary.uploader.upload(req.file.path, {
-      folder: 'your_folder_name', // folder in Cloudinary account
+      folder: 'your_folder_name', // Specify the folder in your Cloudinary account
       public_id: `${Date.now()}_${req.file.originalname}`, // Use a unique public_id
     });
 
