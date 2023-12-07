@@ -14,10 +14,7 @@ app.use(cors({
 app.use(express.json());
 
 // Connect to MongoDB
-mongoose.connect('mongodb+srv://admin:admin@cluster0.pxfdxzk.mongodb.net/mern_todo', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+mongoose.connect('mongodb+srv://admin:admin@cluster0.pxfdxzk.mongodb.net/mern_todo');
 
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
@@ -76,14 +73,14 @@ app.post('/upload', upload.single('file'), async (req, res) => {
 });
 
 app.get('/files', async (req, res) => {
-  try {
-    const files = await File.find();
-    res.status(200).json(files);
-  } catch (error) {
-    console.error('Error fetching files:', error);
-    res.status(500).json({ error: 'Error fetching files' });
-  }
-});
+    try {
+      const files = await File.find();
+      res.status(200).json(files);
+    } catch (error) {
+      console.error('Error fetching files:', error);
+      res.status(500).json({ error: 'Error fetching files', details: error.message });
+    }
+  });
 
 // Serve static files
 app.use('/public', express.static('./public'));
